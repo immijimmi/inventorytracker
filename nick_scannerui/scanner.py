@@ -22,8 +22,6 @@ class Scanner(Component.with_extensions(GridHelper)):
         self._item_code.trace_add("write", lambda *args: self._validate_item_code())
         self._submit_log.trace_add("write", lambda *args: self._update_submit_log())
 
-        self._other_locations = self._config["locations"]
-
     def _render(self) -> None:
         self.children["submit_log_text"] = None
         self.children["submit_button"] = None
@@ -87,7 +85,7 @@ class Scanner(Component.with_extensions(GridHelper)):
             action_destination_dropdown = OptionMenu(
                 self._frame,
                 self._action_destination,
-                *self._other_locations,
+                *self._config["locations"],
                 command=lambda value: self._validate_form()
             )
             action_destination_dropdown.grid(row=4, column=4, sticky="nswe")
@@ -107,13 +105,24 @@ class Scanner(Component.with_extensions(GridHelper)):
         self._validate_form()
 
     def _validate_form(self):
-        if "" in (self._location.get(), self._action.get(), self._item_code.get()):
-            self.children["submit_button"].config(state="disabled")
+        checks = []
+
+        checks.append(
+            "" not in (self._location.get(), self._action.get(), self._item_code.get())
+        )  # Necessary fields are not blank
+        checks.append(
+            not ((self._action.get() == "Sent") and (self._action_destination.get() == ""))
+        )  # Not sending to a blank destination
+        checks.append(
+            not (
+                    (self._action.get() == "Sent") and (self._action_destination.get() == self._location.get())
+            )
+        )  # Not sending to current location
+
+        if all(checks):
+            self.children["submit_button"].config(state="active")
         else:
-            if (self._action.get() == "Sent") and (self._action_destination.get() == ""):
-                self.children["submit_button"].config(state="disabled")
-            else:
-                self.children["submit_button"].config(state="active")
+            self.children["submit_button"].config(state="disabled")
 
     def _validate_item_code(self):
         old_value = self._item_code.get()
