@@ -150,7 +150,7 @@ class Scanner(Component.with_extensions(GridHelper)):
             action_destination = ""
 
         row = [
-            datetime.datetime.now().isoformat(),
+            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             self._location.get(),
             "#"+self._item_code.get(),  # Hash symbol added to stop excel converting the number to scientific notation
             self._action.get(),
