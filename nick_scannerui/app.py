@@ -1,5 +1,5 @@
 from tkinter import Tk
-from json import loads
+from json import loads, dumps
 
 from .constants import Constants
 from .scanner import Scanner
@@ -7,18 +7,16 @@ from .scanner import Scanner
 
 class App:
     def __init__(self):
-        config = Constants.DEFAULT_CONFIG
-
-        # Attempting to load custom config
+        # Attempting to load config file
         try:
             with open("config.json", "r") as config_file:
-                custom_config = loads(config_file.read())
+                config = loads(config_file.read())
+        # No config file found
         except FileNotFoundError:
-            custom_config = {}
-
-        # Applying custom config
-        for config_key in custom_config:
-            config[config_key] = custom_config[config_key]
+            config = Constants.DEFAULT_CONFIG
+            # Create new config file and write the default config to it for convenience
+            with open("config.json", "w") as config_file:
+                config_file.write(dumps(config))
 
         self._window = Tk()
         self._window.resizable(False, False)
