@@ -5,7 +5,9 @@ class Constants:
         "locations": ["TEST"],
         "styles": {
             "title": {
-                "font": ["Bahnschrift", 12],
+                "font": ["Bahnschrift", 12]
+            },
+            "row_title": {
                 "anchor": "w"
             }
         }

@@ -8,5 +8,5 @@ cd ..
 python -m venv ./venv
 venv\Scripts\python -m pip install -r requirements.txt
 
-venv\Scripts\python -m nickscannerui
+venv\Scripts\python -m nick_scannerui
 pause
