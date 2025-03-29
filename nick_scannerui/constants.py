@@ -1,5 +1,5 @@
 class Constants:
-    WINDOW_TITLE = "Inventory Scanner"
+    APP_NAME = "Inventory Tracker"
 
     DEFAULT_CONFIG = {
         "locations": ["TEST"],

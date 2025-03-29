@@ -149,7 +149,7 @@ class Scanner(Component.with_extensions(GridHelper)):
         ]
         row_csv_str = ",".join(row) + "\n"
 
-        csv_filename = f"Inventory Log - {self._location.get()}.csv"
+        csv_filename = f"{Constants.APP_NAME} Log - {self._location.get()}.csv"
         try:  # First attempt to append to an existing file
             with open(csv_filename, "r") as csv_file:
                 csv_exists = True
