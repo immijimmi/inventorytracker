@@ -3,13 +3,14 @@ from tkcomponents.extensions import GridHelper
 
 from tkinter import Label, Button, StringVar, Entry, OptionMenu, Text, END
 import datetime
+from typing import Callable
 
 from ..constants import Constants
 
 
 class Scanner(Component.with_extensions(GridHelper)):
-    def __init__(self, container, locations, styles=None):
-        super().__init__(container, styles=styles)
+    def __init__(self, container, locations, on_change: Callable[[str], None], styles=None):
+        super().__init__(container, on_change=on_change, styles=styles)
 
         styles = styles or {}
         self.styles["frame"] = styles.get("frame", {})
@@ -139,6 +140,8 @@ class Scanner(Component.with_extensions(GridHelper)):
 
         self._item_code.set(result)
         self._validate_form()
+
+        self._on_change(result)
 
     def _update_submit_log(self):
         self.children["submit_log_text"].config(state="normal")

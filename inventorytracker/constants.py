@@ -2,6 +2,7 @@ class Constants:
     APP_NAME = "Inventory Tracker"
 
     DEFAULT_CONFIG = {
+        "admin_passnum": "01189998819991197253",
         "locations": [
             "PLACEHOLDER"
         ],
