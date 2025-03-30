@@ -6,6 +6,6 @@ a cloud storage solution (Google Drive, OneDrive etc.). The .exe file should be 
 that folder (creating a shortcut to place elsewhere is fine).
 
 Some assumptions are made regarding the use of this app, and must be followed to prevent sync conflicts:
-- Only one computer should use this app to log tracking changes *per location* in a short span of time
+- Only one computer *per location* should use this app to log tracking changes to that location in a short span of time
 (this is because tracking logs are split into one file per location)
-- Only one computer should use this app to generate new barcodes in a short span of time (since item barcodes are stored in a single file)
+- Only one computer *total* should use this app to generate new barcodes in a short span of time (since item barcodes are stored in a single file)
