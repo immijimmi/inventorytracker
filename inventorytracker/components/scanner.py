@@ -4,14 +4,19 @@ from tkcomponents.extensions import GridHelper
 from tkinter import Label, Button, StringVar, Entry, OptionMenu, Text, END
 import datetime
 
-from .constants import Constants
+from ..constants import Constants
 
 
 class Scanner(Component.with_extensions(GridHelper)):
-    def __init__(self, container, config=Constants.DEFAULT_CONFIG):
-        super().__init__(container)
+    def __init__(self, container, locations, styles=None):
+        super().__init__(container, styles=styles)
 
-        self._config = config
+        styles = styles or {}
+        self.styles["frame"] = styles.get("frame", {})
+        self.styles["title"] = styles.get("title", {})
+        self.styles["row_title"] = styles.get("row_title", {})
+
+        self._locations = locations
 
         self._item_code = StringVar()
         self._location = StringVar()
@@ -26,7 +31,7 @@ class Scanner(Component.with_extensions(GridHelper)):
         self.children["submit_log_text"] = None
         self.children["submit_button"] = None
 
-        self._frame.configure(padx=12, pady=12)
+        self._frame.configure(**self.styles["frame"])
 
         self._apply_frame_stretch(rows=(5,), columns=(5,))
         self._apply_dividers(5, columns=(1, 3), rows=(1, 3))
@@ -35,15 +40,15 @@ class Scanner(Component.with_extensions(GridHelper)):
         location_title = Label(
             self._frame,
             text="Location",
-            **self._config["styles"]["title"],
-            **self._config["styles"]["row_title"]
+            **self.styles["title"],
+            **self.styles["row_title"]
         )
         location_title.grid(row=0, column=0, sticky="nswe")
 
         location_dropdown = OptionMenu(
             self._frame,
             self._location,
-            *self._config["locations"],
+            *self._locations,
             command=lambda value: self._validate_form()
         )
         location_dropdown.grid(row=0, column=2, sticky="nswe")
@@ -51,8 +56,8 @@ class Scanner(Component.with_extensions(GridHelper)):
         item_code_title = Label(
             self._frame,
             text="Item Code",
-            **self._config["styles"]["title"],
-            **self._config["styles"]["row_title"]
+            **self.styles["title"],
+            **self.styles["row_title"]
         )
         item_code_title.grid(row=2, column=0, sticky="nswe")
 
@@ -65,8 +70,8 @@ class Scanner(Component.with_extensions(GridHelper)):
         action_title = Label(
             self._frame,
             text="Action",
-            **self._config["styles"]["title"],
-            **self._config["styles"]["row_title"]
+            **self.styles["title"],
+            **self.styles["row_title"]
         )
         action_title.grid(row=4, column=0, sticky="nswe")
 
@@ -79,21 +84,21 @@ class Scanner(Component.with_extensions(GridHelper)):
         action_dropdown.grid(row=4, column=2, sticky="nswe")
 
         if self._action.get() == "Sent":
-            action_connecting_label = Label(self._frame, text="to", **self._config["styles"]["title"])
+            action_connecting_label = Label(self._frame, text="to", **self.styles["title"])
             action_connecting_label.grid(row=4, column=3, sticky="nswe")
 
             action_destination_dropdown = OptionMenu(
                 self._frame,
                 self._action_destination,
-                *self._config["locations"],
+                *self._locations,
                 command=lambda value: self._validate_form()
             )
             action_destination_dropdown.grid(row=4, column=4, sticky="nswe")
 
-        submit_log_title = Label(self._frame, text="Log", **self._config["styles"]["title"])
+        submit_log_title = Label(self._frame, text="Recent", **self.styles["title"])
         submit_log_title.grid(row=0, column=7, sticky="nswe")
 
-        submit_log_text = Text(self._frame, width=75, height=10)
+        submit_log_text = Text(self._frame, width=35, height=7)
         submit_log_text.grid(row=2, column=7, rowspan=5, sticky="nswe")
         self.children["submit_log_text"] = submit_log_text
         self._update_submit_log()
@@ -152,14 +157,14 @@ class Scanner(Component.with_extensions(GridHelper)):
         row = [
             datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             self._location.get(),
-            "#"+self._item_code.get(),  # Hash symbol added to stop excel converting the number to scientific notation
+            "#" + self._item_code.get(),  # Hash symbol added to stop excel converting the number to scientific notation
             self._action.get(),
             action_destination
         ]
         row_csv_str = ",".join(row) + "\n"
 
         csv_filename = f"{Constants.APP_NAME} Log - {self._location.get()}.csv"
-        try:  # First attempt to append to an existing file
+        try:  # First, attempt to append to an existing file
             with open(csv_filename, "r") as csv_file:
                 csv_exists = True
         except FileNotFoundError:  # Make a new file with headers if one does not exist
@@ -171,4 +176,8 @@ class Scanner(Component.with_extensions(GridHelper)):
             csv_file.write(row_csv_str)
 
         self._item_code.set("")
-        self._submit_log.set(self._submit_log.get() + row_csv_str)
+
+        submit_log_last_2_entries = self._submit_log.get().splitlines()[-2:]
+        self._submit_log.set(
+            "\n".join((*submit_log_last_2_entries, row_csv_str))
+        )

@@ -3,4 +3,4 @@
 
 pip install -r requirements.txt
 
-start pythonw -m nick_scannerui
+start pythonw -m inventorytracker

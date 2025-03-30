@@ -2,7 +2,7 @@ from tkinter import Tk
 from json import loads, dumps
 
 from .constants import Constants
-from .scanner import Scanner
+from .tracker import Tracker
 
 
 class App:
@@ -27,7 +27,7 @@ class App:
         self._window.columnconfigure(0, weight=1)
         self._window.rowconfigure(0, weight=1)
 
-        s = Scanner(self._window, config=config)
-        s.render().grid(sticky="nswe")
+        t = Tracker(self._window, config=config)
+        t.render().grid(sticky="nswe")
 
         self._window.mainloop()
