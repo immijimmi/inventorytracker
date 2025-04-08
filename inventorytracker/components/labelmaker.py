@@ -118,7 +118,12 @@ class LabelMaker(Component.with_extensions(GridHelper)):
                 csv_file.write("Datetime,Item Code,Item Name\n")
             csv_file.write(row_csv_str)
 
-        svg_filename = f"Barcode #{new_barcode_obj}.svg"
+        minimal_sanitised_item_name = (
+            "".join(
+                char for char in self._item_name.get() if char.isalnum()
+            ).strip()
+        )
+        svg_filename = f"Barcode #{new_barcode_obj} ({minimal_sanitised_item_name}).svg"
         with open(svg_filename, "wb") as svg_file:
             new_barcode_obj.write(svg_file)
 
