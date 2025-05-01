@@ -1,4 +1,4 @@
-## Inventory Tracker
+## InventoryTracker
 
 This project is a small desktop app designed for tracking movement of store inventory between multiple locations.
 It uses an unregistered UPCA barcode system (EAN compatible), and expects that the files it generates will be synced between locations using
